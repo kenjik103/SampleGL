@@ -158,10 +158,24 @@ float vertices[] = {
 
     //activate shader
     lightingShader.use();
-    lightingShader.setVec3("objectColor", glm::vec3(1.0f, 0.5f, 0.31f));
-    lightingShader.setVec3("lightColor",  glm::vec3(1.0f, 1.0f, 1.0f));
-    lightingShader.setVec3("lightPos", lightPos);
+    lightingShader.setVec3("light.lightPos", lightPos);
     lightingShader.setVec3("viewPos", camera.Position);
+
+    glm::vec3 lightColor;
+    lightColor.x = static_cast<float>(sin(glfwGetTime() * 2.0));
+    lightColor.y = static_cast<float>(sin(glfwGetTime() * 0.7));
+    lightColor.z = static_cast<float>(sin(glfwGetTime() * 1.3));
+    glm::vec3 diffuseColor = lightColor   * glm::vec3(0.5f); 
+    glm::vec3 ambientColor = diffuseColor * glm::vec3(0.2f); 
+    lightingShader.setVec3("light.ambient",  diffuseColor);
+    lightingShader.setVec3("light.diffuse",  ambientColor); // darken diffuse light a bit
+    lightingShader.setVec3("light.specular", glm::vec3(1.0f, 1.0f, 1.0f)); 
+
+    lightingShader.setVec3("material.ambient",  glm::vec3(1.0f, 0.5f, 0.31f));
+    lightingShader.setVec3("material.diffuse",  glm::vec3(1.0f, 0.5f, 0.31f));
+    lightingShader.setVec3("material.specular", glm::vec3(0.5f, 0.5f, 0.5f));
+    lightingShader.setFloat("material.shininess", 32.0f);
+
 
     //view matrix
     glm::mat4 view, projection = glm::mat4(1.0f);
@@ -188,6 +202,7 @@ float vertices[] = {
     model = glm::translate(model, lightPos);
     model = glm::scale(model, glm::vec3(0.2f));
     lightCubeShader.setMat4("model", model);
+    lightCubeShader.setVec3("lightColor", lightColor);
 
     glBindVertexArray(lightCubeVAO);
     glDrawArrays(GL_TRIANGLES, 0, 36);
