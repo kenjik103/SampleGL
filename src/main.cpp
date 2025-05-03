@@ -2,6 +2,7 @@
 #include <GLFW/glfw3.h>
 
 #include <iostream>
+#include <filesystem>
 
 #include "camera.h"
 #include "glm/detail/type_mat.hpp"
@@ -31,6 +32,13 @@ bool firstMouse = true;
 
 float deltaTime{};
 float lastFrame{};
+
+namespace fs = std::filesystem;
+//projectRoot assumes build was compiled from cmake-build-debug, which is not ideal
+//however the fix involves a decent amount of hackish code and im the only one running this
+//stuff anyway so im leaving it for now
+fs::path projectRoot = fs::current_path().parent_path(); //mehhhh
+fs::path srcRoot = projectRoot / "src";
 
 int main(int argc, char *argv[]) {
 // ======================GLAD+GLFW INITIALIZATION==============================
@@ -64,9 +72,11 @@ int main(int argc, char *argv[]) {
   //=============================SHADER INITIALIZATION===========================
  
   //TODO: get a better file management system (please)
-  Shader backpackShader("/home/ken-chan/projects/sample-gl/src/shaders/backpack/vertex.glsl",
-                        "/home/ken-chan/projects/sample-gl/src/shaders/backpack/fragment.glsl");
-  Model backpack("/home/ken-chan/projects/sample-gl/models/backpack/backpack.obj");
+  fs::path shaderRoot = srcRoot / "shaders";
+  Shader backpackShader((shaderRoot / "backpack" / "vertex.glsl").c_str(),
+                        (shaderRoot / "backpack" / "fragment.glsl").c_str());
+  fs::path modelRoot = projectRoot / "models";
+  Model backpack(modelRoot / "backpack" / "backpack.obj");
 
   //enable polygon mode
   //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
