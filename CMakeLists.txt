@@ -5,7 +5,7 @@ project(SampleGL VERSION 1.0)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-# Find all source files but exclude GLM
+# Find all source files
 file(GLOB_RECURSE SOURCES "src/*.cpp" "src/*.c")
 
 # Create executable
