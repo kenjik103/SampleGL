@@ -6,6 +6,7 @@
 
 #include "camera.h"
 #include "glm/detail/type_mat.hpp"
+#include "glm/detail/type_vec.hpp"
 #include "glm/glm.hpp"
 #include "glm/gtc/matrix_transform.hpp"
 #include "glm/gtc/type_ptr.hpp"
@@ -32,6 +33,8 @@ bool firstMouse = true;
 
 float deltaTime{};
 float lastFrame{};
+
+glm::vec3 lightPosition(1.2f, 1.0f, 2.0f);
 
 namespace fs = std::filesystem;
 //projectRoot assumes build was compiled from cmake-build-debug, which is not ideal
@@ -111,6 +114,17 @@ int main(int argc, char *argv[]) {
     // it's a bit too big for our scene, so scale it down
     model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));	
     backpackShader.setMat4("model", model);
+
+    backpackShader.setVec3("viewerPos", camera.Position);
+
+    backpackShader.setVec3("pointlight.position", lightPosition);
+    backpackShader.setFloat("pointlight.constant", 1.0f);
+    backpackShader.setFloat("pointlight.linear", 0.09f);
+    backpackShader.setFloat("pointlight.quadratic", 0.032f);
+    backpackShader.setVec3("pointlight.ambient", glm::vec3(0.1f));
+    backpackShader.setVec3("pointlight.diffuse", glm::vec3(0.8f));
+    backpackShader.setVec3("pointlight.specular", glm::vec3(1.f));
+
     backpack.Draw(backpackShader);
 
     // check + call events & swap buffers

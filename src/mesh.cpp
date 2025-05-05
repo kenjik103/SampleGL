@@ -19,8 +19,7 @@ Mesh::Mesh(std::vector<Vertex> vertecies,
 }
 
 void Mesh::Draw(Shader &shader) const {
-  unsigned int diffuseNr{1};
-  unsigned int specularNr{1};
+  unsigned int diffuseNr, specularNr, normalNr{1};
   for (unsigned int i{}; i < textures.size(); ++i) {
     glActiveTexture(GL_TEXTURE0 + i);
 
@@ -31,6 +30,9 @@ void Mesh::Draw(Shader &shader) const {
     }
     else if (name == "texture_specular") {
       number = std::to_string(specularNr++); //note incr. order
+    }
+    else if (name == "texture_normal") {
+      number = std::to_string(normalNr++); //note incr. order
     }
 
     shader.setInt((name + number).c_str(), i);

@@ -1,4 +1,5 @@
 #include <assimp/Importer.hpp>
+#include <assimp/material.h>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 #include <cstring>
@@ -102,6 +103,13 @@ Mesh Model::processMesh(aiMesh *aiMesh, const aiScene *scene){
                           aiTextureType_SPECULAR,
                           "texture_specular");
     textures.insert(textures.end(), specularMap.begin(), specularMap.end());
+
+    std::vector<Texture> normalMap = 
+      loadMaterialTextures(aiMat,
+                          aiTextureType_HEIGHT,//for map_Bump types in mtl file
+                          "texture_normal");
+    textures.insert(textures.end(), normalMap.begin(), normalMap.end());
+
   }
   return Mesh(vertecies, indices, textures);
 }
@@ -114,8 +122,8 @@ std::vector<Texture> Model::loadMaterialTextures(aiMaterial *mat,
     aiString texFPath;
     mat->GetTexture(type, i, &texFPath); 
     bool loaded{false};
+    //check if texture has been loaded before (optimization)
     for (size_t j{}; j < texturesLoaded.size(); ++j){
-      //if we loaded this texture before (cuz their file names are identical)
       if (std::strcmp(texturesLoaded[j].fName.c_str(), texFPath.C_Str()) == 0){
         textures.push_back(texturesLoaded[j]);
         loaded = true;

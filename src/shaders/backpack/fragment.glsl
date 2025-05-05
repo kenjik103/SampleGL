@@ -2,10 +2,58 @@
 out vec4 FragColor;
 
 in vec2 TexCoords;
+in vec3 FragPos;
+
+struct PointLight {
+  vec3 position;
+
+  float constant;
+  float linear;
+  float quadratic;
+
+  vec3 ambient;
+  vec3 diffuse;
+  vec3 specular;
+};
+uniform PointLight pointlight;
+vec3 CalcPointLight(PointLight light, vec3 fragPos, vec3 viewDir);
+
+uniform vec3 viewerPos;
 
 uniform sampler2D texture_diffuse1;
+uniform sampler2D texture_specular1;
+uniform sampler2D texture_normal1;
 
 void main()
 {    
-    FragColor = texture(texture_diffuse1, TexCoords);
+    FragColor = vec4(CalcPointLight(pointlight,
+                                    FragPos,
+                                    normalize(viewerPos - FragPos)),
+                     1.0f);
+}
+
+vec3 CalcPointLight(PointLight light, vec3 fragPos, vec3 viewDir){
+  vec3 texDiffuseVal = texture(texture_diffuse1, TexCoords).rgb;
+  vec3 lightDir = normalize(light.position - fragPos);
+  vec3 normal = (texture(texture_normal1, TexCoords).xyz * 2.0f - 1.f);
+
+  vec3 ambient = light.ambient * texDiffuseVal;
+  
+  vec3 diffuse = max(dot(lightDir, normal), 0.0) * texDiffuseVal;
+
+  float spec = pow(max(dot(reflect(-lightDir, normal), viewDir), 0.0),
+                      16.0);
+  vec3 specular = spec * light.specular * 
+    texture(texture_specular1, TexCoords).rgb;
+
+  float d = length(light.position - fragPos);
+  float attenuation = 1.0f / (light.constant 
+                            + light.linear * d 
+                            + light.quadratic * d * d);
+
+  ambient *= attenuation;
+  diffuse *= attenuation;
+  specular *= attenuation;
+
+  return ambient + diffuse + specular;
 }
