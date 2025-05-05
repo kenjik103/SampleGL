@@ -121,7 +121,7 @@ int main(int argc, char *argv[]) {
     backpackShader.setFloat("pointlight.constant", 1.0f);
     backpackShader.setFloat("pointlight.linear", 0.09f);
     backpackShader.setFloat("pointlight.quadratic", 0.032f);
-    backpackShader.setVec3("pointlight.ambient", glm::vec3(0.1f));
+    backpackShader.setVec3("pointlight.ambient", glm::vec3(0.05f));
     backpackShader.setVec3("pointlight.diffuse", glm::vec3(0.8f));
     backpackShader.setVec3("pointlight.specular", glm::vec3(1.f));
 

@@ -39,7 +39,8 @@ vec3 CalcPointLight(PointLight light, vec3 fragPos, vec3 viewDir){
 
   vec3 ambient = light.ambient * texDiffuseVal;
   
-  vec3 diffuse = max(dot(lightDir, normal), 0.0) * texDiffuseVal;
+  vec3 diffuse = max(dot(lightDir, normal), 0.0) * texDiffuseVal 
+    * light.diffuse;
 
   float spec = pow(max(dot(reflect(-lightDir, normal), viewDir), 0.0),
                       16.0);
