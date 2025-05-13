@@ -3,6 +3,7 @@ out vec4 FragColor;
 
 in vec2 TexCoords;
 in vec3 FragPos;
+in vec3 Normals;
 
 struct PointLight {
   vec3 position;
@@ -35,7 +36,7 @@ void main()
 vec3 CalcPointLight(PointLight light, vec3 fragPos, vec3 viewDir){
   vec3 texDiffuseVal = texture(texture_diffuse1, TexCoords).rgb;
   vec3 lightDir = normalize(light.position - fragPos);
-  vec3 normal = (texture(texture_normal1, TexCoords).xyz * 2.0f - 1.f);
+  vec3 normal = Normals;
 
   vec3 ambient = light.ambient * texDiffuseVal;
   

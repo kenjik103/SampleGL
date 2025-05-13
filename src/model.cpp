@@ -63,17 +63,28 @@ Mesh Model::processMesh(aiMesh *aiMesh, const aiScene *scene){
   //load up our vertecies
   for (size_t i{}; i < aiMesh->mNumVertices; ++i) {
     Vertex vertex;
+    //positions
     vertex.Position.x = aiMesh->mVertices[i].x;
     vertex.Position.y = aiMesh->mVertices[i].y;
     vertex.Position.z = aiMesh->mVertices[i].z;
     if (aiMesh->HasNormals()){
+      //normals
       vertex.Normal.x = aiMesh->mNormals[i].x;
       vertex.Normal.y = aiMesh->mNormals[i].y;
       vertex.Normal.z = aiMesh->mNormals[i].z;
     }
     if (aiMesh->mTextureCoords[0]) { 
+      //texture coords
       vertex.TexCoords.x = aiMesh->mTextureCoords[0][i].x;
       vertex.TexCoords.y = aiMesh->mTextureCoords[0][i].y;
+      //tangents
+      vertex.Tangent.x = aiMesh->mTangents[i].x;
+      vertex.Tangent.y = aiMesh->mTangents[i].y;
+      vertex.Tangent.z = aiMesh->mTangents[i].z;
+      //bitangents
+      vertex.BiTangent.x = aiMesh->mBitangents[i].x;
+      vertex.BiTangent.y = aiMesh->mBitangents[i].y;
+      vertex.BiTangent.z = aiMesh->mBitangents[i].z;
     } else {
       vertex.TexCoords = glm::vec2(0.0f, 0.0f);
     }
